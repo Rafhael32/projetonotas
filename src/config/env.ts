@@ -2,7 +2,7 @@ import 'dotenv/config';
 import { z } from 'zod';
 
 const schema = z.object({
-  PORT: z.string().regex(/^\d+$/).transform(Number).pipe(z.number().int().min(1).max(65535)),
+  PORT: z.string().regex(/^\d+$/).default('3000').transform(Number).pipe(z.number().int().min(1).max(65535)),
   DATABASE_URL: z.url().refine(value => /^postgres(ql)?:\/\//.test(value)),
 });
 
