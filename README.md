@@ -1,13 +1,34 @@
 # Node Notas
 
-API de notas com Node.js, TypeScript, Express, Drizzle, Zod e PostgreSQL.
+Aplicação de notas com interface web, cadastro e login, construída com Node.js, TypeScript, Express, Drizzle, Zod e PostgreSQL.
 
-## Executar
+## Acessar online
+
+**[Abrir o Caderno](https://projetonotas-rafhael3.vercel.app)**
+
+Crie uma conta no aplicativo para salvar e gerenciar suas notas. Não é necessário ter conta na Vercel. Cada usuário acessa apenas suas próprias notas.
+
+## Hospedagem e banco de dados
+
+| Ambiente | Aplicação | Banco de dados |
+| --- | --- | --- |
+| Produção | [Vercel](https://projetonotas-rafhael3.vercel.app) | PostgreSQL no Neon |
+| Desenvolvimento local | http://localhost:3000 | PostgreSQL no Docker, em localhost:6000 |
+
+O banco online persiste os usuários e as notas independentemente do computador de desenvolvimento. Os bancos local e online são separados: contas e notas criadas localmente não aparecem automaticamente no site, e vice-versa.
+
+O projeto `projetonotas` na Vercel está conectado ao [repositório no GitHub](https://github.com/Rafhael32/projetonotas). Alterações enviadas à branch `main` acionam um novo deploy de produção.
+
+A entrada da aplicação na Vercel é `app.ts`, que exporta o Express e integra o pool PostgreSQL ao ciclo de execução da plataforma. Os arquivos de `public/` são distribuídos pela Vercel. A conexão com o Neon é configurada pela variável de ambiente `DATABASE_URL` na hospedagem; credenciais e arquivos `.env` não devem ser versionados.
+
+As migrações iniciais já foram aplicadas ao banco online. Novas alterações de schema exigem aplicar as migrações versionadas de `drizzle/` no banco correspondente; o deploy não executa `db:migrate` automaticamente. Para migrar o Neon, use a conexão direta `DATABASE_URL_UNPOOLED` como valor de `DATABASE_URL` no processo de migração. O comando local usa o banco configurado no ambiente em que é executado.
+
+## Executar localmente
 
 Requisitos: Node.js 22 ou superior, npm e Docker com Compose.
 
 1. Execute `npm install` (ou `npm ci` com o lockfile).
-2. Crie `.env` a partir de `.env-example` e preencha os valores abaixo. O ambiente local inicial já está configurado.
+2. Crie `.env` a partir de `.env-example` e preencha os valores abaixo.
 3. Execute `npm run db:up`.
 4. Execute `npm run db:migrate`.
 5. Opcionalmente, após cadastrar um usuário, defina `SEED_USER_ID` com seu UUID e execute `npm run db:seed`.
@@ -120,8 +141,8 @@ A migração preserva notas antigas com `id_user = NULL`; elas ficam inacessíve
 O seed exige `SEED_USER_ID` de um usuário já cadastrado. Em PowerShell: `$env:SEED_USER_ID = 'uuid-do-usuario'`, seguido de `npm run db:seed`. Ele cria duas notas apenas se esse usuário ainda não tiver notas.
 ## Frontend
 
-Abra http://localhost:3000 para acessar o Caderno. A interface inclui cadastro, login, listagem das notas do usuário, busca por título/texto, criação, edição e exclusão com confirmação. O layout se adapta a celulares e computadores.
+Abra o [Caderno online](https://projetonotas-rafhael3.vercel.app) ou http://localhost:3000 ao executar localmente. A interface inclui cadastro, login, listagem das notas do usuário, busca por título/texto, criação, edição e exclusão com confirmação. O layout se adapta a celulares e computadores.
 
-Os arquivos em `public/` são servidos pelo Express, tanto em `npm run dev` quanto em `npm start` após o build. Não é necessário um servidor ou build separado para o frontend. Mantenha a pasta `public/` junto do projeto ao distribuir a aplicação.
+Localmente, os arquivos em `public/` são servidos pelo Express, tanto em `npm run dev` quanto em `npm start` após o build. Na Vercel, são servidos pela plataforma. Não é necessário um servidor ou build separado para o frontend. Mantenha a pasta `public/` junto do projeto ao distribuir a aplicação.
 
 O token fica em `sessionStorage` durante a sessão da aba e é enviado no header Authorization. Sair remove a sessão do navegador; um novo login invalida o token anterior no servidor. Respostas 401 nas notas levam de volta ao login. As fontes usam Google Fonts, com fontes locais de fallback.
