@@ -8,6 +8,14 @@ Aplicação de notas com interface web, cadastro e login, construída com Node.j
 
 Crie uma conta no aplicativo para salvar e gerenciar suas notas. Não é necessário ter conta na Vercel. Cada usuário acessa apenas suas próprias notas.
 
+## Instalar como aplicativo (PWA)
+
+Abra o [Caderno](https://projetonotas-rafhael3.vercel.app) no navegador. No Chrome/Edge compatível, use **Instalar Caderno**, quando o botão aparecer, ou a opção de instalação no menu do navegador. No iPhone/iPad, use **Compartilhar → Adicionar à Tela de Início**. A disponibilidade e o nome da opção dependem do navegador.
+
+O aplicativo instalado abre em uma janela própria. Cadastro, login e acesso ou alteração de notas exigem internet. Após a primeira visita online e a ativação do service worker, abrir o app sem conexão mostra uma tela com a opção de tentar novamente. Se a conexão cair com o aplicativo aberto, um aviso aparece sem descartar o texto do editor; salvar exige reconexão.
+
+O service worker armazena somente a página offline: notas, tokens e respostas da API não são guardados no Cache Storage. Não há edição offline com sincronização. As atualizações do aplicativo são buscadas pela rede; ao alterar a página offline, incremente a versão do cache em `public/sw.js`.
+
 ## Hospedagem e banco de dados
 
 | Ambiente | Aplicação | Banco de dados |
